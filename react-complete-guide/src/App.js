@@ -5,33 +5,35 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      { name: 'Daynya', age: 37 },
-      { name: 'Michael', age: 45 },
-      { name: 'Seymour', age: 10 }
+      { id: 'prsn12', name: 'Daynya', age: 37 },
+      { id: 'prsn34', name: 'Michael', age: 45 },
+      { id: 'prsn56', name: 'Seymour', age: 10 }
     ],
     otherState: 'other value',
     showPersons: false
   }
 
-  switchNameHandler = (newName) => {
-    // console.log('Was clicked!');
-    this.setState({
-      persons: [
-        { name: newName, age: 37.75 },
-        { name: 'Michael', age: 45 },
-        { name: 'Hemi', age: 12 }
-      ] 
-    })
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({persons: persons});
   }
 
-  nameChangedHandler = (event) => {
-    this.setState({
-      persons: [
-        { name: 'Daynya', age: 37.75 },
-        { name: event.target.value, age: 45 },
-        { name: 'Hemi', age: 12 }
-      ] 
-    })
+  deletePersonHandler = (personIndex) => {
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons})
   }
 
   togglePersonsHandler = () => {
@@ -53,10 +55,13 @@ class App extends Component {
     if (this.state.showPersons)  {
       persons = (
         <div>
-          {this.state.persons.map(person => {
+          {this.state.persons.map((person, index) => {
             return <Person 
+              click={() => this.deletePersonHandler(index)}
               name={person.name} 
-              age={person.age} />
+              age={person.age}
+              key={person.id}
+              changed={(event) => this.nameChangedHandler(event, person.id)} />
           })}
         </div> 
       );
