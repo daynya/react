@@ -19,6 +19,8 @@ class App extends Component {
     this.setState({userInput: udpatedText});
   }
 
+
+  
   render() {
     const charList = this.state.userInput.split('').map((char, index) => {
       return <Char 
